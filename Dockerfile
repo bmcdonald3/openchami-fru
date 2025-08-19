@@ -1,18 +1,10 @@
 FROM chainguard/wolfi-base:latest
 
-# Include curl in the final image.
-RUN set -ex \
-    && apk update \
-    && apk add --no-cache --no-check-certificate curl tini \
-    && rm -rf /var/cache/apk/*  \
-    && rm -rf /tmp/*
+RUN set -ex && apk update && apk add --no-cache --no-check-certificate tini && rm -rf /var/cache/apk/*
 
-COPY go.* ./
-COPY *.go ./
+COPY ochami-fru /usr/local/bin/ochami-fru
 
-# nobody 65534:65534
-USER 65534:65534
+USER 65534
 
-CMD [ "/openchami-fru" ]
-
-ENTRYPOINT [ "/sbin/tini", "--" ]
+ENTRYPOINT ["/sbin/tini", "--"]
+CMD ["/usr/local/bin/ochami-fru"]
