@@ -1,0 +1,25 @@
+project_name: ochami-fru
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: ochami-fru
+    main: ./cmd/ochami-fru/
+    binary: ochami-fru
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+    goarch:
+      - amd64
+
+dockers:
+  -
+    ids:
+      - ochami-fru
+    image_templates:
+      - "ochami-fru:latest"
+    dockerfile: Dockerfile
+    build_flag_templates:
+      - "--platform=linux/amd64"
