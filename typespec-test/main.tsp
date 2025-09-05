@@ -6,7 +6,7 @@ using TypeSpec.Http;
 using TypeSpec.Rest;
 using TypeSpec.OpenAPI;
 
-@service({
+@service(#{
   title: "Inventory Service",
   version: "1.0.0",
 })
@@ -49,7 +49,7 @@ model Device {
   hostname?: string;
 
   @doc("Type of hardware component.")
-  componentType: ComponentType; // Changed from string
+  componentType: ComponentType;
 
   @doc("Hardware manufacturer.")
   manufacturer: string;
@@ -70,11 +70,11 @@ model Device {
   properties?: Record<unknown>;
 
   @doc("The ID of the parent device this component is installed in.")
-  @visibility(read) // Corrected syntax
+  @visibility("read")
   parentDeviceId?: UUID;
 
   @doc("A list of IDs for all devices installed in this component.")
-  @visibility(read) // Corrected syntax
+  @visibility("read")
   childrenDeviceIds?: UUID[];
 
   @doc("Time of resource creation.")
@@ -111,7 +111,7 @@ model Location {
   properties?: Record<unknown>;
 
   @doc("A list of IDs for all child locations within this location.")
-  @visibility(read) // Corrected syntax
+  @visibility("read")
   childrenLocationIds?: LocationId[];
 
   @doc("Time of resource creation.")
@@ -178,7 +178,6 @@ model EventData {
 // Supporting Models
 // ============================================================================
 
-// Added missing filter and pagination models
 model DeviceFilters {
   @query componentType?: ComponentType;
   @query manufacturer?: string;
@@ -195,15 +194,23 @@ model LocationFilters {
   @query occupied?: boolean;
 }
 
-model PaginationParams {
-  @query limit?: int32 = 50;
-  @query offset?: int32 = 0;
+model EventFilters {
+  @query eventType?: EventType;
+  @query deviceId?: UUID;
+  @query locationId?: LocationId;
+  @query timestampAfter?: utcDateTime;
+  @query timestampBefore?: utcDateTime;
 }
 
 model PaginationInfo {
   count: int32;
   total: int32;
   offset: int32;
+}
+
+model PaginationParams {
+  @query limit?: int32 = 50;
+  @query offset?: int32 = 0;
 }
 
 @error
@@ -306,11 +313,7 @@ interface LocationOperations extends ResourceOperations<Location, LocationId, Lo
 @route("/inventory/v1/events")
 interface EventOperations {
   @get
-  list(
-    @query filter?: string,
-    @query limit?: int32,
-    @query offset?: int32
-  ): {
+  list(...EventFilters, ...PaginationParams): {
     @statusCode statusCode: 200;
     @body body: { items: Event[], ...PaginationInfo };
   } | ErrorResponse;
