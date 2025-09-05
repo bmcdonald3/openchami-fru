@@ -3,4 +3,3 @@ emit:
 options:
   "@typespec/openapi3":
     output-file: "openapi.yaml"
-  
