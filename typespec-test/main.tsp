@@ -1,17 +1,25 @@
 import "@typespec/http";
 import "@typespec/rest";
 import "@typespec/openapi3";
+import "@typespec/versioning";
 
 using TypeSpec.Http;
 using TypeSpec.Rest;
 using TypeSpec.OpenAPI;
+using TypeSpec.Versioning;
+using TypeSpec.Omit; // Added to resolve Omit error
 
-@service(#{
+@service({
   title: "Inventory Service",
-  version: "1.0.0",
 })
+@versioned(Versions)
 @doc("Stores and manages hardware device inventory, location, and event data for NGSM.")
 namespace InventoryService;
+
+enum Versions {
+  @doc("Initial version")
+  `1.0.0`,
+}
 
 // ============================================================================
 // Custom Scalar Types
@@ -266,7 +274,7 @@ interface ResourceOperations<TResource, TKey, TFilters> {
 // API Operations
 // ============================================================================
 
-@route("/inventory/v1/devices")
+@route("/inventory/{version}/devices")
 interface DeviceOperations extends ResourceOperations<Device, UUID, DeviceFilters> {
   @route("/{id}/history")
   @get
@@ -276,7 +284,7 @@ interface DeviceOperations extends ResourceOperations<Device, UUID, DeviceFilter
   } | ErrorResponse;
 }
 
-@route("/inventory/v1/locations")
+@route("/inventory/{version}/locations")
 interface LocationOperations extends ResourceOperations<Location, LocationId, LocationFilters> {
   @route("/{id}/history")
   @get
@@ -310,7 +318,7 @@ interface LocationOperations extends ResourceOperations<Location, LocationId, Lo
   } | ErrorResponse;
 }
 
-@route("/inventory/v1/events")
+@route("/inventory/{version}/events")
 interface EventOperations {
   @get
   list(...EventFilters, ...PaginationParams): {
