@@ -64,11 +64,8 @@ namespace InventoryService {
   // Core Data Models
   // ============================================================================
 
-  model Device {
-    @doc("Primary identifier for the resource, a UUID.")
-    @key
-    id: UUID;
-
+  /** Properties for creating or updating a Device. */
+  model DeviceProperties {
     @doc("User-defined name for the resource.")
     name: string;
 
@@ -95,6 +92,13 @@ namespace InventoryService {
 
     @doc("Flexible key-value properties for other, non-standard data.")
     properties?: Record<unknown>;
+  }
+
+  /** A full Device resource, including server-generated fields. */
+  model Device extends DeviceProperties {
+    @doc("Primary identifier for the resource, a UUID.")
+    @key
+    id: UUID;
 
     @doc("The ID of the parent device this component is installed in.")
     @visibility(Lifecycle.Read)
@@ -114,11 +118,8 @@ namespace InventoryService {
     deletedAt?: utcDateTime;
   }
 
-  model Location {
-    @doc("Primary identifier for the location (e.g., xname).")
-    @key
-    id: LocationId;
-
+  /** Properties for creating or updating a Location. */
+  model LocationProperties {
     @doc("User-defined name for the location.")
     name: string;
 
@@ -136,6 +137,13 @@ namespace InventoryService {
 
     @doc("Location-specific properties.")
     properties?: Record<unknown>;
+  }
+
+  /** A full Location resource, including server-generated fields. */
+  model Location extends LocationProperties {
+    @doc("Primary identifier for the location (e.g., xname).")
+    @key
+    id: LocationId;
 
     @doc("A list of IDs for all child locations within this location.")
     @visibility(Lifecycle.Read)
@@ -152,8 +160,8 @@ namespace InventoryService {
   }
 
   /**
-  * An event record that conforms to the CloudEvents v1.0 specification.
-  */
+   * An event record that conforms to the CloudEvents v1.0 specification.
+   */
   model Event {
     @doc("Unique identifier for the event.")
     @key
@@ -182,8 +190,8 @@ namespace InventoryService {
   }
 
   /**
-  * The specific data payload for an inventory event.
-  */
+   * The specific data payload for an inventory event.
+   */
   model EventData {
     @doc("The device involved in the event.")
     deviceId?: UUID;
@@ -234,7 +242,7 @@ namespace InventoryService {
   }
 
   /** A template for standard CRUD operations on a resource. */
-  interface ResourceOperations<TResource, TKey, TFilters> {
+  interface ResourceOperations<TResource, TCreateOrUpdate, TKey, TFilters> {
     @get
     list(...TFilters, ...PaginationParams): {
       @statusCode statusCode: 200;
@@ -242,7 +250,7 @@ namespace InventoryService {
     } | ErrorResponse;
 
     @post
-    create(@body resource: Omit<TResource, "id" | "createdAt" | "updatedAt" | "deletedAt">): {
+    create(@body resource: TCreateOrUpdate): {
       @statusCode statusCode: 201;
       @body body: TResource;
     } | ErrorResponse;
@@ -256,7 +264,7 @@ namespace InventoryService {
 
     @route("/{id}")
     @put
-    update(@path id: TKey, @body resource: Omit<TResource, "id" | "createdAt" | "updatedAt" | "deletedAt">): {
+    update(@path id: TKey, @body resource: TCreateOrUpdate): {
       @statusCode statusCode: 200;
       @body body: TResource;
     } | ErrorResponse;
@@ -277,8 +285,9 @@ namespace InventoryService {
   // API Operations
   // ============================================================================
 
-  @route("/inventory/devices") // REMOVED hardcoded /v1
-  interface DeviceOperations extends ResourceOperations<Device, UUID, DeviceFilters> {
+  @route("/inventory/devices")
+  interface DeviceOperations
+    extends ResourceOperations<Device, DeviceProperties, UUID, DeviceFilters> {
     @route("/{id}/history")
     @get
     getHistory(@path id: UUID, ...PaginationParams): {
@@ -287,8 +296,14 @@ namespace InventoryService {
     } | ErrorResponse;
   }
 
-  @route("/inventory/locations") // REMOVED hardcoded /v1
-  interface LocationOperations extends ResourceOperations<Location, LocationId, LocationFilters> {
+  @route("/inventory/locations")
+  interface LocationOperations
+    extends ResourceOperations<
+      Location,
+      LocationProperties,
+      LocationId,
+      LocationFilters
+    > {
     @route("/{id}/history")
     @get
     getHistory(@path id: LocationId, ...PaginationParams): {
@@ -321,7 +336,7 @@ namespace InventoryService {
     } | ErrorResponse;
   }
 
-  @route("/inventory/events") // REMOVED hardcoded /v1
+  @route("/inventory/events")
   interface EventOperations {
     @get
     list(
