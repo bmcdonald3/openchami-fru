@@ -1,18 +1,25 @@
 import "@typespec/http";
 import "@typespec/rest";
 import "@typespec/openapi3";
-import "@typespec/compiler"; // Added for Visibility
+import "@typespec/compiler";
+import "@typespec/versioning";
 
 using TypeSpec.Http;
 using TypeSpec.Rest;
 using TypeSpec.OpenAPI;
-using TypeSpec.Visibility; // Added for @visibility
-using TypeSpec.Omit;       // Added for Omit<>
+using TypeSpec.Versioning;
+using TypeSpec.Reflection.Visibility;
+using TypeSpec.Reflection.Omit;
 
-@service(#{
+enum Versions {
+  @doc("Version 1.0.0")
+  v1: "1.0.0",
+}
+
+@service({
   title: "Inventory Service",
-  version: "1.0.0",
 })
+@versioned(Versions)
 @doc("Stores and manages hardware device inventory, location, and event data for NGSM.")
 namespace InventoryService;
 
@@ -273,7 +280,7 @@ interface ResourceOperations<TResource, TKey, TFilters> {
 // API Operations
 // ============================================================================
 
-@route("/inventory/v1/devices")
+@route("/inventory/devices") // REMOVED hardcoded /v1
 interface DeviceOperations extends ResourceOperations<Device, UUID, DeviceFilters> {
   @route("/{id}/history")
   @get
@@ -283,7 +290,7 @@ interface DeviceOperations extends ResourceOperations<Device, UUID, DeviceFilter
   } | ErrorResponse;
 }
 
-@route("/inventory/v1/locations")
+@route("/inventory/locations") // REMOVED hardcoded /v1
 interface LocationOperations extends ResourceOperations<Location, LocationId, LocationFilters> {
   @route("/{id}/history")
   @get
@@ -317,7 +324,7 @@ interface LocationOperations extends ResourceOperations<Location, LocationId, Lo
   } | ErrorResponse;
 }
 
-@route("/inventory/v1/events")
+@route("/inventory/events") // REMOVED hardcoded /v1
 interface EventOperations {
   @get
   list(
