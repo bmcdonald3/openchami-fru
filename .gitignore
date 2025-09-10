@@ -1,0 +1,5 @@
+# NPM dependencies
+/typespec-test/node_modules
+
+# TypeSpec generated output
+/typespec-test/tsp-output
