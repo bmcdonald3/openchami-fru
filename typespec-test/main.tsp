@@ -145,6 +145,10 @@ namespace InventoryService {
     @key
     id: LocationId;
 
+    @doc("A system-generated ID derived from location attributes in properties.")
+    @visibility(Lifecycle.Read)
+    derivedId?: string;
+
     @doc("A list of IDs for all child locations within this location.")
     @visibility(Lifecycle.Read)
     childrenLocationIds?: LocationId[];
