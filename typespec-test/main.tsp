@@ -237,6 +237,31 @@ namespace InventoryService {
     stateAfter?: Record<unknown>;
   }
 
+  /** Describes one end of a connection. */
+  model ConnectionEndpoint {
+    @doc("The ID of the device being connected.")
+    deviceId: UUID;
+
+    @doc("The name of the port or interface on the device (e.g., 'eth0', 'port23').")
+    portName: string;
+  }
+
+  /** Represents a physical or logical connection between two device ports. */
+  model Connection {
+    @doc("Unique identifier for the connection itself.")
+    @key
+    id: UUID;
+
+    @doc("The device acting as the cable or connection medium.")
+    cableId?: UUID;
+
+    @doc("The first endpoint of the connection.")
+    endpointA: ConnectionEndpoint;
+
+    @doc("The second endpoint of the connection.")
+    endpointB: ConnectionEndpoint;
+  }
+
   // ============================================================================
   // Supporting Models
   // ============================================================================
@@ -403,5 +428,22 @@ namespace InventoryService {
       @statusCode statusCode: 200;
       @body body: Event;
     } | ErrorResponse;
+  }
+  
+  @route("/inventory/v1/connections")
+  interface ConnectionOperations {
+    @get
+    list(): { @body body: { items: Connection[] } } | ErrorResponse;
+
+    @post
+    create(@body connection: Omit<Connection, "id">): { @statusCode statusCode: 201, @body body: Connection } | ErrorResponse;
+
+    @route("/{id}")
+    @get
+    get(@path id: UUID): Connection | ErrorResponse;
+    
+    @route("/{id}")
+    @delete
+    delete(@path id: UUID): { @statusCode statusCode: 204 } | ErrorResponse;
   }
 }
