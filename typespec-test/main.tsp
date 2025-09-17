@@ -243,6 +243,12 @@ namespace InventoryService {
 
   // Placeholder models for filtering
   model DeviceFilters {
+    @query componentType?: ComponentType;
+    @query manufacturer?: string;
+    @query partNumber?: string;
+    @query serialNumber?: string;
+    @query status?: DeviceStatus;
+    @query location?: LocationId;
     @doc("Filter resources based on tags. Ex: 'OS' eq 'Linux'")
     @query("filter-tags") 
     filterTags?: string;
