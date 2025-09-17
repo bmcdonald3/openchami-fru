@@ -92,6 +92,9 @@ namespace InventoryService {
 
     @doc("Flexible key-value properties for other, non-standard data.")
     properties?: Record<unknown>;
+
+    @doc("Key-value tags for the resource.")
+    tags?: Record<string>;
   }
 
   /** A full Device resource, including server-generated fields. */
@@ -137,6 +140,9 @@ namespace InventoryService {
 
     @doc("Location-specific properties.")
     properties?: Record<unknown>;
+
+    @doc("Key-value tags for the resource.")
+    tags?: Record<string>;
   }
 
   /** A full Location resource, including server-generated fields. */
