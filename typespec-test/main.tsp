@@ -201,6 +201,10 @@ namespace InventoryService {
     @key
     id: UUID;
 
+    @doc("A simple, human-friendly, auto-incrementing integer ID.")
+    @visibility(Lifecycle.Read)
+    numericId: int32;
+
     @doc("Identifies the context in which an event happened. (e.g., /inventory/v1/api)")
     source: string;
 
@@ -263,6 +267,10 @@ namespace InventoryService {
     @doc("Unique identifier for the connection itself.")
     @key
     id: UUID;
+
+    @doc("A simple, human-friendly, auto-incrementing integer ID.")
+    @visibility(Lifecycle.Read)
+    numericId: int32;
   }
 
   // ============================================================================
