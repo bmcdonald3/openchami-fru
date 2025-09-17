@@ -254,6 +254,18 @@ namespace InventoryService {
     filterTags?: string;
   }
   model LocationFilters {
+    @doc("Filter by the type of location (e.g., 'node_slot').")
+    @query
+    locationType?: LocationType;
+
+    @doc("Filter by the parent location's ID.")
+    @query
+    parentLocationId?: LocationId;
+
+    @doc("Filter by the location's status ('occupied' or 'empty').")
+    @query
+    status?: LocationStatus;
+    
     @doc("Filter resources based on tags. Ex: 'OS' eq 'Linux'")
     @query("filter-tags") 
     filterTags?: string;
