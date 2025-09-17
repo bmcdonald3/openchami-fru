@@ -181,6 +181,18 @@ namespace InventoryService {
     deletedAt?: utcDateTime;
   }
 
+  /** Properties for creating a Connection. */
+  model ConnectionProperties {
+    @doc("The device acting as the cable or connection medium.")
+    cableId?: UUID;
+
+    @doc("The first endpoint of the connection.")
+    endpointA: ConnectionEndpoint;
+
+    @doc("The second endpoint of the connection.")
+    endpointB: ConnectionEndpoint;
+  }
+
   /**
    * An event record that conforms to the CloudEvents v1.0 specification.
    */
@@ -247,19 +259,10 @@ namespace InventoryService {
   }
 
   /** Represents a physical or logical connection between two device ports. */
-  model Connection {
+  model Connection extends ConnectionProperties {
     @doc("Unique identifier for the connection itself.")
     @key
     id: UUID;
-
-    @doc("The device acting as the cable or connection medium.")
-    cableId?: UUID;
-
-    @doc("The first endpoint of the connection.")
-    endpointA: ConnectionEndpoint;
-
-    @doc("The second endpoint of the connection.")
-    endpointB: ConnectionEndpoint;
   }
 
   // ============================================================================
@@ -436,7 +439,7 @@ namespace InventoryService {
     list(): { @body body: { items: Connection[] } } | ErrorResponse;
 
     @post
-    create(@body connection: Omit<Connection, "id">): { @statusCode statusCode: 201, @body body: Connection } | ErrorResponse;
+    create(@body connection: ConnectionProperties): { @statusCode statusCode: 201, @body body: Connection } | ErrorResponse;
 
     @route("/{id}")
     @get
