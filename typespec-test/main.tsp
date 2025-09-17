@@ -242,8 +242,16 @@ namespace InventoryService {
   }
 
   // Placeholder models for filtering
-  model DeviceFilters {}
-  model LocationFilters {}
+  model DeviceFilters {
+    @doc("Filter resources based on tags. Ex: 'OS' eq 'Linux'")
+    @query("filter-tags") 
+    filterTags?: string;
+  }
+  model LocationFilters {
+    @doc("Filter resources based on tags. Ex: 'OS' eq 'Linux'")
+    @query("filter-tags") 
+    filterTags?: string;
+  }
 
   @error
   model ErrorResponse {
