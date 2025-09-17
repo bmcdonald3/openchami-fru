@@ -73,7 +73,7 @@ namespace InventoryService {
     hostname?: string;
 
     @doc("Type of hardware component.")
-    componentType: string;
+    componentType: ComponentType;
 
     @doc("Hardware manufacturer.")
     manufacturer: string;
@@ -261,6 +261,7 @@ namespace InventoryService {
 
   /** A template for standard CRUD operations on a resource. */
   interface ResourceOperations<TResource, TCreateOrUpdate, TKey, TFilters> {
+    @doc("List all resources. By default, results are sorted by creation date in descending order.")
     @get
     list(...TFilters, ...PaginationParams): {
       @statusCode statusCode: 200;
