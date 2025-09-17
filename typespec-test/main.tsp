@@ -60,6 +60,10 @@ namespace InventoryService {
     "com.openchami.inventory.device.failed",
   }
 
+  union ComponentType {
+    "rack_unit", "chassis_bay", "node_slot", "drive_bay", "power_outlet", "cooling_port", "other"
+  }
+
   // ============================================================================
   // Core Data Models
   // ============================================================================
@@ -102,6 +106,10 @@ namespace InventoryService {
     @doc("Primary identifier for the resource, a UUID.")
     @key
     id: UUID;
+
+    @doc("A simple, human-friendly, incrementing integer ID.")
+    @visibility(Lifecycle.Read)
+    numericId: int32;
 
     @doc("The ID of the parent device this component is installed in.")
     @visibility(Lifecycle.Read)
@@ -150,6 +158,10 @@ namespace InventoryService {
     @doc("Primary identifier for the location (e.g., xname).")
     @key
     id: LocationId;
+
+    @doc("A simple, human-friendly, incrementing integer ID.")
+    @visibility(Lifecycle.Read)
+    numericId: int32;
 
     @doc("A system-generated ID derived from location attributes in properties.")
     @visibility(Lifecycle.Read)
