@@ -141,7 +141,7 @@ namespace InventoryService {
     parentLocationId?: LocationId;
 
     @doc("ID of the device currently installed at this location.")
-    currentDeviceId?: UUID;
+    deviceId?: UUID;
 
     @doc("Current status of the location.")
     status: LocationStatus;
