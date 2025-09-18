@@ -184,7 +184,7 @@ namespace InventoryService {
   /** Properties for creating a Connection. */
   model ConnectionProperties {
     @doc("The device acting as the cable or connection medium.")
-    cableId?: UUID;
+    connectionID?: UUID;
 
     @doc("The first endpoint of the connection.")
     endpointA: ConnectionEndpoint;
