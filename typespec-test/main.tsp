@@ -89,7 +89,7 @@ namespace InventoryService {
     serialNumber: string;
 
     @doc("Current location where device is installed.")
-    currentLocationId?: LocationId;
+    locationId?: LocationId;
 
     @doc("Current status of the device.")
     status: DeviceStatus;
